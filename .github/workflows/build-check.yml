@@ -1,0 +1,46 @@
+name: Build Check
+
+on:
+  push:
+    branches-ignore:
+      - "dependabot/**"
+  pull_request:
+    branches:
+      - main
+      - v5.*
+  schedule:
+    - # build runs every monday at 4:15AM UTC
+    - cron: '15 4 * * 1'
+
+env:
+  FORCE_COLOR: 2
+  NODE: 22
+  CI: true
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [22.x]
+        os: [ubuntu-latest, windows-latest, macOS-latest]
+
+    steps:
+      - name: Clone repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.node-version }}
+          cache: 'npm'
+
+      - name: Install npm fix
+        run: npm install @rollup/rollup-linux-x64-gnu --save-optional
+      - name: Install npm dependencies
+        run: npm install
+
+      - name: Run build
+        run: npm run build
