@@ -1,0 +1,116 @@
+<c-col xs="12">
+  <c-card class="mb-4">
+    <c-card-header>
+      <strong>Listado de productos</strong>
+    </c-card-header>
+    <c-card-body>
+      <button
+      cButton
+      color="success"
+      class="mb-3"
+      [cModalToggle]="'verticallyCenteredModal'"
+      (click)="nuevoProducto()"
+    >
+      Nuevo producto
+    </button>
+
+      <table cTable>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Codigo</th>
+            <th>Tipo Producto (Marca)</th>
+            <th>Cantidad</th>
+            <th>Precio</th>
+            <th>Cantidad</th>
+            <th>Foto</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let p of productos">
+            <td>{{ p.id }}</td>
+            <td>{{ p.codigo }}</td>
+            <td>{{ p.tipo }}</td>
+            <td>{{ p.cantidad }}</td>
+            <td>$ {{ p.precio }}</td>
+            <td>{{ p.cantidad }}</td>
+            <td><img [src]="p.foto" width="60" alt="foto producto" /></td>
+            <td>
+              <button 
+              [cModalToggle]="'verticallyCenteredModal'"
+              cButton color="primary" (click)="verDetalle(p)">
+                Ver más
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </c-card-body>
+  </c-card>
+</c-col>
+
+
+<c-modal id="verticallyCenteredModal" alignment="center">
+  <c-modal-header>
+    <h5 cModalTitle>
+      {{ modoFormulario ? 'Nuevo producto' : 'Detalle de producto' }}
+    </h5>
+    <button [cModalToggle]="'verticallyCenteredModal'" cButtonClose></button>
+  </c-modal-header>
+
+  <c-modal-body *ngIf="productoSeleccionado">
+    <ng-container *ngIf="modoFormulario; else soloLectura">
+      <div class="mb-2">
+        <label><strong>Código:</strong></label>
+        <input type="text" class="form-control" [(ngModel)]="productoSeleccionado.codigo" />
+      </div>
+      <div class="mb-2">
+        <label><strong>Tipo:</strong></label>
+        <input type="text" class="form-control" [(ngModel)]="productoSeleccionado.tipo" />
+      </div>
+      <div class="mb-2">
+        <label><strong>Cantidad:</strong></label>
+        <input type="number" class="form-control" [(ngModel)]="productoSeleccionado.cantidad" />
+      </div>
+      <div class="mb-2">
+        <label><strong>Precio:</strong></label>
+        <input type="number" class="form-control" [(ngModel)]="productoSeleccionado.precio" />
+      </div>
+      <div class="mb-2">
+        <label><strong>Foto (URL):</strong></label>
+        <input type="text" class="form-control" [(ngModel)]="productoSeleccionado.foto" />
+      </div>
+    </ng-container>
+
+    <ng-template #soloLectura>
+      <p><strong>ID:</strong> {{ productoSeleccionado.id }}</p>
+      <p><strong>Código:</strong> {{ productoSeleccionado.codigo }}</p>
+      <p><strong>Tipo:</strong> {{ productoSeleccionado.tipo }}</p>
+      <p><strong>Cantidad:</strong> {{ productoSeleccionado.cantidad }}</p>
+      <p><strong>Precio:</strong> ${{ productoSeleccionado.precio }}</p>
+      <img [src]="productoSeleccionado.foto" width="100" alt="Imagen" />
+    </ng-template>
+  </c-modal-body>
+
+  <c-modal-footer>
+    <button
+      *ngIf="modoFormulario"
+      (click)="guardarProducto()"
+      [cModalToggle]="'verticallyCenteredModal'"
+      cButton
+      color="primary"
+    >
+      Guardar
+    </button>
+
+    <button
+      [cModalToggle]="'verticallyCenteredModal'"
+      cButton
+      color="secondary"
+    >
+      Cerrar
+    </button>
+  </c-modal-footer>
+</c-modal>
+
+
